@@ -12,7 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 
-def get_html_element(url: str, selector : str = "div.weekly-advisory-content") -> str:
+def get_html_element(url: str, selector : str ) -> str:
     """Fetches the PAGASA weather advisory page and captures the advisory
     content from the `.weekly-advisory-content` div using BeautifulSoup.
 
@@ -51,7 +51,6 @@ def get_html_element(url: str, selector : str = "div.weekly-advisory-content") -
                 EC.presence_of_element_located(
                     (
                         # wait, why? dunno
-
                         By.CSS_SELECTOR,
                         f"{selector}",
                     )

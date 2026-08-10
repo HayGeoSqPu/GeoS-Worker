@@ -9,7 +9,7 @@ from app.scraper.weather_advisory import parse_pagasa_comment_advisory
 if __name__ == "__main__":
     # ! how to use
     url = "https://www.pagasa.dost.gov.ph/weather/weather-advisory"
-    raw = get_html_element(url)
+    raw = get_html_element(url, "div.weekly-advisory-content")
     advisory = parse_pagasa_comment_advisory(raw)
 
     
