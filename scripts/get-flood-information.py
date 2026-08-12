@@ -6,6 +6,9 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from app.scraper.base import get_html_element
 from app.scraper.flood_information import get_enriched_flood_status
+
+
+
 if __name__ == "__main__":
     # ! how to use
     selector = "div.basin-hydro-forecast table"

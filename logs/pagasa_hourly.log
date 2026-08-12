@@ -1,0 +1,33 @@
+Scraping PAGASA weather advisory ...
+  weather advisory: 3 rainfall tier(s)
+    >200 mm: 0 location(s)
+    100 – 200 mm: 0 location(s)
+    50 – 100 mm: 1 location(s)
+Scraping PAGASA regional forecast ...
+  regional forecast: 10 province(s)
+scanned 21 geofence(s) of type='Flood prone' -> 0 matched
+scanned 1 geofence(s) of type='Landslide prone' -> 0 matched
+[activated] 6a79d8b0907ce7c2a2a0f591 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79d8bc907ce7c2a2a0f592 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79d8c7907ce7c2a2a0f593 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79d8d2907ce7c2a2a0f594 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79d8e0907ce7c2a2a0f595 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79d8e9907ce7c2a2a0f596 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79d940907ce7c2a2a0f597 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79da31907ce7c2a2a0f598 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79da3e907ce7c2a2a0f599 type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79f9827fb678ddf696a24f type='Flood prone' location='LEGAZPI CITY, ALBAY'
+[activated] 6a79fea7dd4f2f041306866f type='Flood prone' location='Irosin, Sorsogon'
+[activated] 6a7a9cc178b77d94795f54c4 type='Flood prone' location='Libon, Albay'
+[activated] 6a7a9cc178b77d94795f54c5 type='Flood prone' location='Libon, Albay'
+[activated] 6a7ab8ff0816431c3fd22558 type='Flood prone' location='Libon, Albay'
+[activated] 6a7ada89509c20e230ee8a24 type='Flood prone' location='Irosin, Sorsogon'
+[activated] 6a7b9e9d17cfb782b2582781 type='Flood prone' location='Libon, Albay'
+[activated] 6a7bba91bc0738147b16844d type='Flood prone' location='Legazpi City, Albay'
+[activated] 6a7bcc4bfb40af69c99f30b8 type='Flood prone' location='Legazpi City, Albay'
+[activated] 6a7bd429fb40af69c99f30bb type='Flood prone' location='Legazpi City, Albay'
+[activated] 6a7bd50ffb40af69c99f30bc type='Flood prone' location='Legazpi City, Albay'
+[activated] 6a7bdbd8fb40af69c99f30bd type='Flood prone' location='Legazpi City, Albay'
+scanned 21 geofence(s) of type='Flood prone' -> 21 matched
+TOTAL activated: 21 geofence(s)
+^C
