@@ -74,30 +74,30 @@ def get_html_element(url: str, selector : str ) -> str:
                     )
                 )
             except TimeoutException:
-                # print("Timed out waiting for advisory content; using current DOM.")
+                print("Timed out waiting for advisory content; using current DOM.")
 
             # Capture the ENTIRE rendered document (not just the iframe)
             html_source = driver.page_source or ""
 
         except Exception as e:
-            # print(f"Error rendering page with Selenium: {e}")
+            print(f"Error rendering page with Selenium: {e}")
 
         finally:
             if driver:
                 driver.quit()
     else:
-        # print("Selenium disabled or unavailable; using plain HTTP fetch.")
+        print("Selenium disabled or unavailable; using plain HTTP fetch.")
 
     # If Selenium failed or returned nothing, fall back to plain HTTP.
     # The raw source still contains the advisory content.
     if not html_source.strip():
-        # print("No rendered HTML captured; falling back to raw HTTP fetch.")
+        print("No rendered HTML captured; falling back to raw HTTP fetch.")
         try:
             response = requests.get(url, headers=headers, timeout=10)
             response.raise_for_status()
             html_source = response.text
         except requests.RequestException as e:
-            # print(f"Error fetching PAGASA website: {e}")
+            print(f"Error fetching PAGASA website: {e}")
             return ""
 
     # Capture the advisory content from its container div

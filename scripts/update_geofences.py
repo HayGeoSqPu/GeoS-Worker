@@ -17,10 +17,10 @@ def main() -> None:
     try:
         summary = run_pagasa_pipeline(dry_run=args.dry_run)
     except Exception as e:
-        # print(f"ERROR: {e}", file=sys.stderr)
+        print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # print(json.dumps(summary, indent=2))
+    print(json.dumps(summary, indent=2))
 
 
 if __name__ == "__main__":

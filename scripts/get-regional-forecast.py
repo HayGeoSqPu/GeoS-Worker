@@ -18,4 +18,4 @@ def run_get_regional_forecast(
 
 if __name__ == "__main__":
     forecast = run_get_regional_forecast()
-    # print(json.dumps(forecast, indent=2, ensure_ascii=False))
+    print(json.dumps(forecast, indent=2, ensure_ascii=False))

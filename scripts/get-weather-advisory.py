@@ -18,4 +18,4 @@ def run_get_weather_advisory(
 
 if __name__ == "__main__":
     advisory = run_get_weather_advisory()
-    # print(json.dumps(advisory, indent=2, ensure_ascii=False))
+    print(json.dumps(advisory, indent=2, ensure_ascii=False))
