@@ -30,14 +30,30 @@ jobs:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         run: |
-          # 1. Start Uvicorn in the background using '&'
-          uvicorn app.main:app --host 127.0.0.1 --port 8000 &
-          
-          # 2. Poll until the server responds (up to 30s safety timeout)
-          echo "Waiting for Uvicorn server to spin up..."
-          timeout 30s bash -c 'until curl -s http://127.0.0.1:8000/api/v1/cron/activate?dry_run=true > /dev/null; do sleep 1; done'
+          # 1. Start Uvicorn in background and log output to uvicorn.log
+          uvicorn app.main:app --host 127.0.0.1 --port 8000 > uvicorn.log 2>&1 &
+          UVICORN_PID=$!
 
-          # 3. Trigger the full execution endpoint
+          # 2. Poll root/docs to confirm Uvicorn is up (up to 30s)
+          echo "Waiting for Uvicorn server to spin up..."
+          READY=0
+          for i in {1..30}; do
+            if curl -s http://127.0.0.1:8000/ > /dev/null || curl -s http://127.0.0.1:8000/docs > /dev/null; then
+              READY=1
+              echo "Uvicorn is ready!"
+              break
+            fi
+            sleep 1
+          done
+
+          # 3. If Uvicorn failed to start, print logs and exit
+          if [ $READY -eq 0 ]; then
+            echo "❌ Uvicorn failed to start. Printing uvicorn.log:"
+            cat uvicorn.log
+            exit 1
+          fi
+
+          # 4. Trigger the actual cron endpoint
           echo "Triggering POST /cron/activate..."
           curl -X POST "http://127.0.0.1:8000/api/v1/cron/activate?dry_run=false" \
             -H "x-cron-secret: $CRON_SECRET" \
