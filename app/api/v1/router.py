@@ -30,4 +30,8 @@ async def cron_activate(dry_run: bool = Query(default=False, description="Valida
     """Gateway endpoint for cron-job.org. Scrapes PAGASA (weather advisory +
     regional forecast) and activates matching geofences in MongoDB."""
     summary = run_pagasa_pipeline(dry_run=dry_run)
-    return {"status": "ok", **summary}
+    return {
+        "status": "success",
+        "message": "PAGASA pipeline executed successfully",
+        "items_processed": len(summary),
+    }
