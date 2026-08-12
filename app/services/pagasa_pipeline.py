@@ -94,9 +94,9 @@ def activate_geofences(collection, geofence_type: str, locations: List[str], dry
                 update["reason"] = reason
                 update["geojson.properties.reason"] = reason
             collection.update_one({"_id": doc["_id"]}, {"$set": update})
-        print(f"[{action}] {doc.get('_id')} type={geofence_type!r} location={doc_location(doc)!r}")
+        # print(f"[{action}] {doc.get('_id')} type={geofence_type!r} location={doc_location(doc)!r}")
 
-    print(f"scanned {n_scanned} geofence(s) of type={geofence_type!r} -> {matched} matched")
+    # print(f"scanned {n_scanned} geofence(s) of type={geofence_type!r} -> {matched} matched")
     return {"scanned": n_scanned, "matched": matched}
 
 
@@ -112,16 +112,16 @@ def run_pagasa_pipeline(dry_run: bool = False) -> Dict[str, Any]:
     if not settings.MONGODB_URI:
         raise RuntimeError("MONGODB_URI not set in .env")
 
-    print("Scraping PAGASA weather advisory ...")
+    # print("Scraping PAGASA weather advisory ...")
     tiers = scrape_advisory()
-    print(f"  weather advisory: {len(tiers)} rainfall tier(s)")
+    # print(f"  weather advisory: {len(tiers)} rainfall tier(s)")
     for tier in tiers.values():
-        print(f"    {tier['rainfall_range']}: {len(tier.get('municipalities', []))} location(s)")
+        # print(f"    {tier['rainfall_range']}: {len(tier.get('municipalities', []))} location(s)")
 
-    print("Scraping PAGASA regional forecast ...")
+    # print("Scraping PAGASA regional forecast ...")
     forecast = scrape_forecast()
     provinces = forecast_locations(forecast)
-    print(f"  regional forecast: {len(provinces)} province(s)")
+    # print(f"  regional forecast: {len(provinces)} province(s)")
 
     client = MongoClient(settings.MONGODB_URI, serverSelectionTimeoutMS=15000)
     collection = client[settings.DATABASE_NAME][GEOFENCES_COLLECTION]
@@ -168,7 +168,7 @@ def run_pagasa_pipeline(dry_run: bool = False) -> Dict[str, Any]:
         results["by_type"][f"forecast:{FLOOD_GEOFENCE_TYPE}"] = res
         results["total_activated"] += res["matched"]
 
-        print(f"TOTAL {'WOULD activate' if dry_run else 'activated'}: {results['total_activated']} geofence(s)")
+        # print(f"TOTAL {'WOULD activate' if dry_run else 'activated'}: {results['total_activated']} geofence(s)")
         return results
     finally:
         client.close()

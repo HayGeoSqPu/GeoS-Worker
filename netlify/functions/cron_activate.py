@@ -12,8 +12,8 @@ from app.services.pagasa_pipeline import run_pagasa_pipeline  # noqa: E402
 def _json_response(status_code: int, payload: dict) -> dict:
     return {
         "statusCode": status_code,
-        "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(payload, default=str),
+        "headers": {"Content-Type": "application/json"}
+        # "body": json.dumps(payload, default=str),
     }
 
 
@@ -34,6 +34,6 @@ def handler(event, context):
 
     try:
         summary = run_pagasa_pipeline(dry_run=dry_run)
-        return _json_response(200, {"status": "ok", **summary})
+        return _json_response(200, {"status": "ok"})
     except Exception as e:
         return _json_response(500, {"detail": str(e)})

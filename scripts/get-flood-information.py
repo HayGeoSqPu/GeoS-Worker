@@ -21,4 +21,4 @@ if __name__ == "__main__":
     info = get_enriched_flood_status(raw, municipalities_path, basins_path)
     
 
-    print(info)
+    # print(info)

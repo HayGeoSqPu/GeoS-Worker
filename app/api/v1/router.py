@@ -18,7 +18,7 @@ async def verify_cron_secret(x_cron_secret: str = Header(default="")) -> None:
 async def cron_activate_public(dry_run: bool = Query(default=True)):
     """Public endpoint for quick health test. Always runs dry-run."""
     summary = run_pagasa_pipeline(dry_run=dry_run)
-    return {"status": "ok", **summary}
+    return {"status": "ok"}
 
 
 @router.post(
@@ -30,8 +30,8 @@ async def cron_activate(dry_run: bool = Query(default=False, description="Valida
     """Gateway endpoint for cron-job.org. Scrapes PAGASA (weather advisory +
     regional forecast) and activates matching geofences in MongoDB."""
     summary = run_pagasa_pipeline(dry_run=dry_run)
-    return {
-        "status": "success",
-        "message": "PAGASA pipeline executed successfully",
-        "items_processed": len(summary),
-    }
+    return {"status": "ok"}
+    # return {
+    #     "status": "success"
+    #     # "message": "PAGASA pipeline executed successfully",
+    # }
