@@ -1,5 +1,6 @@
 [build]
   command = "echo 'no build step needed'"
+  publish = "public"
 
   [build.environment]
     PYTHON_VERSION = "3.12"
