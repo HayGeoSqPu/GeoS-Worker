@@ -135,31 +135,32 @@ def run_pagasa_pipeline(dry_run: bool = False) -> Dict[str, Any]:
     try:
         # Extract headline from forecast
         forecast_headline = forecast.get("headline", "") if forecast else ""
-        
-        # Extract impacts from advisory tiers
-        advisory_impacts = []
-        for tier in tiers.values():
-            if tier.get("impact"):
-                advisory_impacts.append(tier["impact"])
-        advisory_impact = "; ".join(advisory_impacts)
 
-        # Weather advisory (rainfall tiers, flood/landslide impacts) -> both hazard types
+        # Weather advisory - activate per tier so each location gets its specific impact
         for geofence_type in (FLOOD_GEOFENCE_TYPE, LANDSLIDE_GEOFENCE_TYPE):
-            res = activate_geofences(
-                collection, 
-                geofence_type, 
-                advisory_locations(tiers), 
-                dry_run,
-                headline=forecast_headline,
-                impact=advisory_impact
-            )
-            results["by_type"][f"advisory:{geofence_type}"] = res
-            results["total_activated"] += res["matched"]
+            total_matched = 0
+            total_scanned = 0
+            for rainfall_range, tier in tiers.items():
+                tier_locations = tier.get("municipalities", [])
+                tier_impact = tier.get("impact", "")
+                res = activate_geofences(
+                    collection,
+                    geofence_type,
+                    tier_locations,
+                    dry_run,
+                    headline=forecast_headline,
+                    impact=tier_impact
+                )
+                total_matched += res["matched"]
+                total_scanned += res["scanned"]
+            results["by_type"][f"advisory:{geofence_type}"] = {"scanned": total_scanned, "matched": total_matched}
+            results["total_activated"] += total_matched
+        
         # Regional forecast (daily outlook per province) -> flood-prone zones
         res = activate_geofences(
-            collection, 
-            FLOOD_GEOFENCE_TYPE, 
-            provinces, 
+            collection,
+            FLOOD_GEOFENCE_TYPE,
+            provinces,
             dry_run,
             headline=forecast_headline,
             impact=""
