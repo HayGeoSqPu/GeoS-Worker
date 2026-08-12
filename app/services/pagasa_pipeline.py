@@ -14,6 +14,7 @@ LANDSLIDE_GEOFENCE_TYPE = "Landslide prone"
 
 ADVISORY_URL = "https://www.pagasa.dost.gov.ph/weather/weather-advisory"
 FORECAST_URL = "https://pagasa.dost.gov.ph/regional-forecast/slprsd"
+CYCLONE_FORECAST = "https://pagasa.dost.gov.ph/weather"
 GEOFENCES_COLLECTION = "geofences"
 
 
@@ -69,11 +70,13 @@ def doc_location(doc: dict) -> str:
     return ", ".join(p for p in (municipality, province) if p)
 
 
-def activate_geofences(collection, geofence_type: str, locations: List[str], dry_run: bool) -> Dict[str, int]:
+def activate_geofences(collection, geofence_type: str, locations: List[str], dry_run: bool, headline: str = "", impact: str = "") -> Dict[str, int]:
     """Sets status=true on every doc of `geofence_type` matching `locations`.
     Returns {"scanned": n, "matched": n}."""
     matched = 0
     n_scanned = 0
+
+    reason = ", ".join(filter(None, [headline, impact]))
 
     for doc in collection.find({"geojson.properties.type": geofence_type}):
         n_scanned += 1
@@ -84,10 +87,12 @@ def activate_geofences(collection, geofence_type: str, locations: List[str], dry
             action = "WOULD activate"
         else:
             action = "activated"
-            # Real docs store status in geojson.properties; set top-level too defensively
             update = {"status": True}
             if doc.get("geojson"):
                 update["geojson.properties.status"] = True
+            if reason:
+                update["reason"] = reason
+                update["geojson.properties.reason"] = reason
             collection.update_one({"_id": doc["_id"]}, {"$set": update})
         print(f"[{action}] {doc.get('_id')} type={geofence_type!r} location={doc_location(doc)!r}")
 
@@ -128,13 +133,37 @@ def run_pagasa_pipeline(dry_run: bool = False) -> Dict[str, Any]:
         "total_activated": 0,
     }
     try:
+        # Extract headline from forecast
+        forecast_headline = forecast.get("headline", "") if forecast else ""
+        
+        # Extract impacts from advisory tiers
+        advisory_impacts = []
+        for tier in tiers.values():
+            if tier.get("impact"):
+                advisory_impacts.append(tier["impact"])
+        advisory_impact = "; ".join(advisory_impacts)
+
         # Weather advisory (rainfall tiers, flood/landslide impacts) -> both hazard types
         for geofence_type in (FLOOD_GEOFENCE_TYPE, LANDSLIDE_GEOFENCE_TYPE):
-            res = activate_geofences(collection, geofence_type, advisory_locations(tiers), dry_run)
+            res = activate_geofences(
+                collection, 
+                geofence_type, 
+                advisory_locations(tiers), 
+                dry_run,
+                headline=forecast_headline,
+                impact=advisory_impact
+            )
             results["by_type"][f"advisory:{geofence_type}"] = res
             results["total_activated"] += res["matched"]
         # Regional forecast (daily outlook per province) -> flood-prone zones
-        res = activate_geofences(collection, FLOOD_GEOFENCE_TYPE, provinces, dry_run)
+        res = activate_geofences(
+            collection, 
+            FLOOD_GEOFENCE_TYPE, 
+            provinces, 
+            dry_run,
+            headline=forecast_headline,
+            impact=""
+        )
         results["by_type"][f"forecast:{FLOOD_GEOFENCE_TYPE}"] = res
         results["total_activated"] += res["matched"]
 
