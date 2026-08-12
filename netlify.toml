@@ -6,4 +6,9 @@
     PYTHON_VERSION = "3.12"
 
 [functions]
-  directory = "functions"
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health_check"
+  status = 200
