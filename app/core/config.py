@@ -7,9 +7,7 @@ class Settings(BaseSettings):
 
     MONGODB_URI: str = ""
     DATABASE_NAME: str = "GEOs"
-
-    MONGODB_URI: str = ""
-    DATABASE_NAME: str = "GEOs"
+    CRON_SECRET: str = ""
 
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
 

@@ -1,14 +1,30 @@
 # contains generics (function shared by other functions)
+import os
+
 from bs4 import BeautifulSoup
 import requests
 from typing import Dict
 
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+# Selenium is optional: serverless runtimes (Vercel) have no Chrome binary,
+# so importing it there must not break the HTTP fallback path.
+try:
+    from selenium import webdriver
+    from selenium.common.exceptions import TimeoutException
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support import expected_conditions as EC
+    from selenium.webdriver.support.ui import WebDriverWait
+
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
+
+# Set SCRAPE_JS=0 to skip Selenium entirely (default: attempt JS rendering).
+USE_SELENIUM = SELENIUM_AVAILABLE and os.environ.get("SCRAPE_JS", "1").lower() not in {
+    "0",
+    "false",
+    "no",
+}
 
 
 
@@ -29,45 +45,48 @@ def get_html_element(url: str, selector : str ) -> str:
         )
     }
 
-    # Configure headless Chrome options
-    chrome_options = Options()
-    chrome_options.add_argument("--headless=new")
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument(f"user-agent={headers['User-Agent']}")
-
     html_source = ""
     driver = None
 
     # Render the page with Selenium so JS-loaded content is available
-    try:
-        driver = webdriver.Chrome(options=chrome_options)
-        driver.get(url)
+    if USE_SELENIUM:
+        # Configure headless Chrome options
+        chrome_options = Options()
+        chrome_options.add_argument("--headless=new")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument(f"user-agent={headers['User-Agent']}")
 
-        # Wait for the advisory content div to appear in the rendered DOM
         try:
-            WebDriverWait(driver, timeout=15).until(
-                EC.presence_of_element_located(
-                    (
-                        # wait, why? dunno
-                        By.CSS_SELECTOR,
-                        f"{selector}",
+            driver = webdriver.Chrome(options=chrome_options)
+            driver.get(url)
+
+            # Wait for the advisory content div to appear in the rendered DOM
+            try:
+                WebDriverWait(driver, timeout=15).until(
+                    EC.presence_of_element_located(
+                        (
+                            # wait, why? dunno
+                            By.CSS_SELECTOR,
+                            f"{selector}",
+                        )
                     )
                 )
-            )
-        except TimeoutException:
-            print("Timed out waiting for advisory content; using current DOM.")
+            except TimeoutException:
+                print("Timed out waiting for advisory content; using current DOM.")
 
-        # Capture the ENTIRE rendered document (not just the iframe)
-        html_source = driver.page_source or ""
+            # Capture the ENTIRE rendered document (not just the iframe)
+            html_source = driver.page_source or ""
 
-    except Exception as e:
-        print(f"Error rendering page with Selenium: {e}")
+        except Exception as e:
+            print(f"Error rendering page with Selenium: {e}")
 
-    finally:
-        if driver:
-            driver.quit()
+        finally:
+            if driver:
+                driver.quit()
+    else:
+        print("Selenium disabled or unavailable; using plain HTTP fetch.")
 
     # If Selenium failed or returned nothing, fall back to plain HTTP.
     # The raw source still contains the advisory content.

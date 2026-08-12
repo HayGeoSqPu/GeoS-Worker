@@ -1,0 +1,8 @@
+[build]
+  command = "echo 'no build step needed'"
+
+  [build.environment]
+    PYTHON_VERSION = "3.12"
+
+[functions]
+  directory = "functions"

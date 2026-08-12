@@ -1,0 +1,22 @@
+⬥ Injecting environment variable values for all scopes
+⬥ Injected netlify.toml file env vars: PYTHON_VERSION
+⬥ Injected .env file env vars: MONGODB_URI, DATABASE_NAME, CRON_SECRET, SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, GOOGLE_API_KEY, EMBEDDING_MODEL, EMBEDDING_DIM, PROXIMITY_MAX_RADIUS_M, SUPABASE_SERVICE_ROLE_KEY
+
+Adding local .netlify folder to .gitignore file...
+⬥ No app server detected. Using simple static server
+⬥ Unable to determine public folder to serve files from. Using current working directory
+⬥ Setup a netlify.toml file with a [dev] section to specify your dev server settings.
+⬥ See docs at: https://docs.netlify.com/cli/local-development/#project-detection
+⬥ Running static server from "Geos-Worker"
+⬥ Setting up local dev server
+
+⬥ Static server listening to 3999
+
+   ╭─────────────────────── ⬥  ────────────────────────╮
+   │                                                   │
+   │   Local dev server ready: http://localhost:8888   │
+   │                                                   │
+   ╰───────────────────────────────────────────────────╯
+
+Request from ::1: POST /.netlify/functions/cron_activate?dry_run=true
+Response with status 404 in 10 ms.
