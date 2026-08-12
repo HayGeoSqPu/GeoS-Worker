@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: geos-pagasa-api
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: DATABASE_NAME
+        value: "GEOs"
+      - key: CRON_SECRET
+        sync: false
+      - key: SCRAPE_JS
+        value: "0"
+    autoDeploy: true
+    healthCheckPath: /health

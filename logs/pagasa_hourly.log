@@ -30,4 +30,4 @@ scanned 1 geofence(s) of type='Landslide prone' -> 0 matched
 [activated] 6a7bdbd8fb40af69c99f30bd type='Flood prone' location='Legazpi City, Albay'
 scanned 21 geofence(s) of type='Flood prone' -> 21 matched
 TOTAL activated: 21 geofence(s)
-^C
+^C^C
