@@ -1,0 +1,8 @@
+﻿netlify.cmd :  ┬╗   Error: Could not find the project ID. If your project is not on Netlify, please run `netlify init` 
+or `netlify deploy` first. If it is, please run `netlify link`.
+At line:1 char:1
++ netlify.cmd build 2>&1 | Out-File -FilePath "logs\netlify-build.txt"  ...
++ ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( ┬╗   Error: Co...`netlify link`.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
